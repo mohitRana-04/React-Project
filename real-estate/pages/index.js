@@ -40,7 +40,7 @@ const Banner = ({
 );
 
 export default function Home({ propertiesForSale, propertiesForRent }) {
-  console.log(propertiesForRent);
+  console.log(propertiesForSale, propertiesForRent);
   return (
     <Box>
       <h1>Hello</h1>
