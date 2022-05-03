@@ -1,26 +1,50 @@
+import { useState, useEffect } from "react";
+
+// why we are using useEffect
+// because wihtout this main function calling component again again means fetch and so prevent this we are using useEffect *infinite loop*
+
 import MeetupList from "../components/meetups/MeetupList";
-const DUMMY_DATA = [
-  {
-    id: "m1",
-    title: "This is a first meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/2560px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Meetupstreet 5, 12345 Meetup City",
-    description:
-      "This is a first, amazing meetup which you definitely should not miss. It will be a lot of fun!",
-  },
-  {
-    id: "m2",
-    title: "This is a second meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/2560px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Meetupstreet 5, 12345 Meetup City",
-    description:
-      "This is a first, amazing meetup which you definitely should not miss. It will be a lot of fun!",
-  },
-];
 
 function AllMeetupsPage() {
+  // we are using this becasuse till the we are fecthcing the data react will show a spinener of loading
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    //  the second array determine how many types this fetch function works otherwise it continues for infinite times without this it this make no sense as previous means infinite times
+    fetch(
+      "https://react-getting-started-6e664-default-rtdb.firebaseio.com/meetups.json"
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        // here we saw that in firebase it has object not array so we are using spread operator and for loop to convert the object into array
+        // making external array called meetups
+        const meetups = [];
+        for (const key in data) {
+          const meetup = {
+            id: key,
+            ...data[key],
+          };
+          meetups.push(meetup);
+        }
+        setIsLoading(false);
+        setLoadedMeetups(meetups);
+      });
+  }, []);
+  // now here we are trying to get all the data from the firbase and show
+
+  // now we dont need to configure this request as post becasue by default it is a  get request
+  // async await is use because if we are fecthing something in react and js doesn't wait and start showing whatever it is using this is wait for the above to run.
+
+  //  in this given below code we first fetch the api using get request and then *then* taking each element while it is taking we show fidget spinner
+
+  if (isLoading) {
+    return <section>Loading..</section>;
+  }
+
   return (
     <section>
       <h1>All Meet Ups</h1>
@@ -38,7 +62,7 @@ function AllMeetupsPage() {
         ]} */}
       {/* </ul> */}
 
-      <MeetupList meetups={DUMMY_DATA} />
+      <MeetupList meetups={loadedMeetups} />
     </section>
   );
 }
