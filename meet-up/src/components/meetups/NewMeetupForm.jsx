@@ -4,7 +4,7 @@ import React from "react";
 import classes from "./NewMeetupForm.module.css";
 import Card from "../ui/Card";
 
-function NewMeetupForm() {
+function NewMeetupForm(props) {
   // to store what use eneter after each key stroke but we are intersted in only once when the user submit the form so to interoduce this in react useRef are used. Instead of onchange to all the blocks we are using ref
 
   // for reading
@@ -31,7 +31,10 @@ function NewMeetupForm() {
       address: enteredAddress,
       description: enteredDescription,
     };
-    console.log(meetupData);
+    // console.log(meetupData);
+
+    // here we make a onAddMeetup function which we pass from NewMeetup.js thorugh props on Meetup data
+    props.onAddMeetup(meetupData);
   }
   return (
     <Card>
